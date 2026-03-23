@@ -2,17 +2,35 @@ import { config, } from '../config/index.js';
 import type { GeminiResponse, ApiError, } from '../types/index.js';
 import type { Message, } from '../types/index.js';
 
+/**
+ * Servicio para interactuar con la API de Google Gemini.
+ * Maneja la comunicación con el modelo de lenguaje y el formateo de mensajes.
+ */
 export class GeminiService {
+	/** Clave API de Gemini para autenticar las solicitudes. */
 	private apiKey: string;
+	/** URL base de la API de Gemini. */
 	private baseUrl: string;
+	/** Nombre del modelo de Gemini a utilizar. */
 	private model: string | undefined;
 
+	/**
+	 * Inicializa el servicio con la configuración de Gemini.
+	 * Carga la API key, la URL base y el modelo desde la configuración.
+	 */
 	constructor() {
 		this.apiKey = config.gemini.apiKey;
 		this.baseUrl = config.gemini.baseUrl;
 		this.model = config.gemini.model;
 	}
 
+	/**
+	 * Convierte el formato de mensajes interno al formato requerido por la API de Gemini.
+	 * Transforma los roles 'assistant' a 'model' y filtra mensajes de sistema.
+	 * 
+	 * @param messages - Array de mensajes en formato interno.
+	 * @returns Array de contenidos formateados para la API de Gemini.
+	 */
 	convertToGeminiFormat(messages: Message[],) {
 		const contents: { role: string; parts: { text: string }[] }[] = [];
 
@@ -28,6 +46,14 @@ export class GeminiService {
 		return contents;
 	}
 
+	/**
+	 * Envía una solicitud de chat al modelo de Gemini y retorna la respuesta.
+	 * Configura los parámetros de generación como temperatura y tokens máximos.
+	 * 
+	 * @param request - Objeto que contiene los mensajes, temperatura opcional y límite de tokens.
+	 * @returns Respuesta formateada en estilo OpenAI con el ID, modelo y choices.
+	 * @throws Error si la API de Gemini retorna un código de error.
+	 */
 	async chat(request: { messages: Message[]; temperature?: number; maxTokens?: number },): Promise<{
 		id: string;
 		object: string;

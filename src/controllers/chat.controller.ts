@@ -3,7 +3,21 @@ import { geminiService, } from '../services/index.js';
 import { chatRequestSchema, } from '../types/index.js';
 import { ZodError, } from 'zod';
 
+/**
+ * Controlador para manejar las solicitudes del chat.
+ * Procesa los mensajes del usuario y los envía al servicio de Gemini.
+ */
 export class ChatController {
+	/**
+	 * Maneja las solicitudes de chat entrantes.
+	 * Valida el cuerpo de la petición, envía los mensajes a Gemini y retorna la respuesta.
+	 * 
+	 * @param req - Objeto de solicitud de Express que contiene el cuerpo con los mensajes.
+	 * @param res - Objeto de respuesta de Express para enviar la respuesta al cliente.
+	 * @param next - Función para pasar el control al siguiente middleware en caso de error.
+	 * 
+	 * @returns Respuesta JSON con los datos de Gemini o error de validación.
+	 */
 	async chat(req: Request, res: Response, next: NextFunction,): Promise<void> {
 		try {
 			console.log('Server received body:', JSON.stringify(req.body, null, 2,),);
@@ -36,4 +50,5 @@ export class ChatController {
 	}
 }
 
+/** Instancia única del controlador de chat para usar en las rutas. */
 export const chatController = new ChatController();
